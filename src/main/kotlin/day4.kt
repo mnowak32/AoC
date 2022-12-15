@@ -23,4 +23,6 @@ fun overlaps(pair: List<IntRange>): Boolean {
 }
 
 fun IntRange.fullyContains(other: IntRange) = this.first <= other.first && this.last >= other.last
-fun IntRange.intersects(other: IntRange) = this.contains(other.first) || this.contains(other.last)
+fun IntRange.intersects(other: IntRange) =
+    this.contains(other.first) || this.contains(other.last) ||
+            other.contains(this.first) || other.contains(this.last)

@@ -2,7 +2,7 @@ import java.io.File
 import kotlin.math.absoluteValue
 
 
-class Map(private val map: List<String>) {
+class TerrainMap(private val map: List<String>) {
     val height = map.size
     val width = map.maxOfOrNull(String::length)!!
     val start = findPoint("S")
@@ -119,7 +119,7 @@ class Map(private val map: List<String>) {
 }
 fun main() {
     val rawMap = File("resources/day12.txt").readLines()
-    val map = Map(rawMap)
+    val map = TerrainMap(rawMap)
     println(map)
     val pathMap = buildList { repeat(map.height) { add(CharArray(map.width) { '.' }) } }
 

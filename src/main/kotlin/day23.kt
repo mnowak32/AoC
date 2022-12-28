@@ -50,8 +50,11 @@ class Day23(input: List<String>) {
     }
 
     private fun secondHalf() {
-        val elvesThatCanReallyMove = elves.filter(Elf::wantToMove).filter { e ->
-            !elves.filter{ it != e }.any { it.chosenX == e.chosenX && it.chosenY == e.chosenY }
+        val movingElves = elves.filter(Elf::wantToMove)
+        val busyTargets = movingElves.groupingBy { it.chosenX to it.chosenY }.eachCount().filterValues { it > 1 }.keys
+        val elvesThatCanReallyMove = movingElves.filter { e ->
+            val target = e.chosenX to e.chosenY
+            target !in busyTargets
         }
         elvesThatCanReallyMove.forEach { e ->
             e.x = e.chosenX
@@ -131,12 +134,13 @@ class Day23(input: List<String>) {
 }
 
 fun main() {
-    val input = File("resources/day23tipiak2.txt").readLines()
+    val input = File("resources/day23.txt").readLines()
     val d23 = Day23(input)
-//    repeat(10) { d23.round() }
-//    println("part 1: ${d23.groveSummary()} empty spaces after 10 rounds")
+    repeat(10) {
+        d23.round()
+    }
+    println("part 1: ${d23.groveSummary()} empty spaces after 10 rounds")
 
-    val roundsTillNoMovement = d23.waitForIdle()
+    val roundsTillNoMovement = 10 + d23.waitForIdle()
     println("part 2: $roundsTillNoMovement rounds before no further movement")
-    d23.print()
 }

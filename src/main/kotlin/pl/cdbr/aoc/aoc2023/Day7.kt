@@ -6,7 +6,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class Day7(filename: String) {
-    val hands = parse(File(filename))
+    private val hands = parse(File(filename))
 
     data class Hand(val cards: String, val bid: Long) {
         private val type: HandType by lazy { HandType.match(this) }
@@ -85,21 +85,22 @@ class Day7(filename: String) {
 
     fun part1() {
         val sorted = hands.sortedWith(Hand::compareWithoutJokers)
-        val winnings = sorted.mapIndexed { index, hand -> hand.bid * (hands.size - index) }
-        println(winnings.sum())
+        println(sorted.totalWinnings())
     }
 
     fun part2() {
         val sorted = hands.sortedWith(Hand::compareWithJokers)
-        val winnings = sorted.mapIndexed { index, hand -> hand.bid * (hands.size - index) }
-        println(winnings.sum())
+        println(sorted.totalWinnings())
     }
+
+    private fun List<Hand>.totalWinnings() = this.mapIndexed { index, hand -> hand.bid * (this.size - index) }.sum()
 
     companion object {
         private const val CARDS_ORDER = "AKQJT98765432"
         private const val CARDS_ORDER_WITH_JOKERS = "AKQT98765432J"
     }
 }
+
 
 fun main() {
     val runningTime = measureTimeMillis {

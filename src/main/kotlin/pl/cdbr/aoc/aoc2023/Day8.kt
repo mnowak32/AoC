@@ -58,13 +58,28 @@ class Day8(filename: String) {
         println(totalSteps)
     }
 
-    private fun leastCommonMultiplier(x: LongArray): Long {
-        val xm = x.clone()
-        while(xm.notAllEqual()) {
-            val lowestIdx = xm.indexOf(xm.min())
-            xm[lowestIdx] += x[lowestIdx]
+    private fun gcd(a: Long, b: Long): Long {
+        return if (a == 0L) {
+            b
+        } else {
+            gcd(b % a, a)
         }
-        return xm.first()
+    }
+
+    private fun gcd(longs: LongArray): Long {
+        var result = longs.first()
+        longs.drop(1).forEach { i ->
+            result = gcd(i, result)
+            if (result == 1L) {
+                return 1L;
+            }
+        }
+        return result
+    }
+
+    private fun leastCommonMultiplier(x: LongArray): Long {
+        val gcd = gcd(x)
+        return x.map { it / gcd }.reduce(Long::times) * gcd
     }
 
     private fun LongArray.notAllEqual() = this.distinct().size > 1
@@ -78,7 +93,6 @@ fun main() {
         print("Part 1 solution is ")
         day.part1()
         print("Part 2 solution is ")
-        //takes a long time, on my PC it ran for over 11 minutes
         day.part2()
     }.also {
         println("Elapsed time: ${it.toDuration(DurationUnit.MILLISECONDS)}")

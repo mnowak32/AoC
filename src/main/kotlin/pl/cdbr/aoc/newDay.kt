@@ -42,7 +42,7 @@ fun main() {
 
 fun main() {
     val year = 2023
-    val day = 9
+    val day = 10
     val targetDirName = "src/main/kotlin/pl/cdbr/aoc/aoc$year"
     val targetDir = Path(targetDirName)
     if (!targetDir.exists() || !targetDir.isDirectory()) {

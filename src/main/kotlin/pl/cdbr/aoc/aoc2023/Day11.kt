@@ -4,34 +4,35 @@ import pl.cdbr.aoc.aoc2023.Day3.Point
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.KMutableProperty0
 import kotlin.system.measureTimeMillis
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class Day11(filename: String) {
-    private lateinit var expandedX: List<Int>
-    private lateinit var expandedY: List<Int>
+    private val spaceMap = parse(File(filename))
+    private val expandedX by lazy {
+        expand(spaceMap.flip())
+    }
+    private val expandedY by lazy {
+        expand(spaceMap)
+    }
+    private val pairs by lazy {
+        parsePairs(spaceMap)
+    }
 
-    private val pairs = parse(File(filename))
-
-    private fun parse(input: File): Set<Pair<Point, Point>> {
-        val initialMap = input.readLines()
-        expand(initialMap, ::expandedY)
-        val flippedMap = initialMap.flip()
-        expand(flippedMap, ::expandedX)
-
+    private fun parse(input: File) = input.readLines()
+    private fun parsePairs(initialMap: List<String>): Set<Pair<Point, Point>> {
         val galaxies = initialMap
             .flatMapIndexed { y, l -> l.mapIndexed { x, c -> if (c == '#') Point(x, y) else null } }
             .filterNotNull().toSet()
         return galaxies.crossProduct()
     }
 
-    private fun expand(initialMap: List<String>, listSetter: KMutableProperty0<List<Int>>) {
-        listSetter.set(initialMap.mapIndexedNotNull { i, line ->
+    private fun expand(initialMap: List<String>): List<Int> {
+        return initialMap.mapIndexedNotNull { i, line ->
             if (!line.contains('#')) i
             else null
-        })
+        }
     }
 
     fun part1() = printExpandedDistanceSum(1)

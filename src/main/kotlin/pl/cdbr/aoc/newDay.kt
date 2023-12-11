@@ -2,8 +2,7 @@ package pl.cdbr.aoc
 
 import kotlin.io.path.*
 
-fun mkFileContents(year: Int, day:Int) = """
-package pl.cdbr.aoc.aoc$year
+fun mkFileContents(year: Int, day:Int) = """package pl.cdbr.aoc.aoc$year
 
 import java.io.File
 import kotlin.system.measureTimeMillis

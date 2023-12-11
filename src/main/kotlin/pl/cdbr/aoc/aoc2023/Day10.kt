@@ -1,4 +1,3 @@
-
 package pl.cdbr.aoc.aoc2023
 
 import pl.cdbr.aoc.aoc2023.Day3.Point
@@ -9,13 +8,16 @@ import kotlin.time.toDuration
 
 class Day10(filename: String) {
     val map = parse(File(filename))
+    var pipe: List<Point> = emptyList()
 
-
-    private fun parse(input: File): List<List<Char>> {
-        return input.readLines().map(String::toList)
+    private fun parse(input: File): List<MutableList<Char>> {
+        return input.readLines().map(String::toMutableList)
     }
 
-    private fun charAt(p: Point) = map.getOrNull(p.y)?.let { line -> line.getOrNull(p.x) } ?: '.'
+    private fun charAt(p: Point) = map.getOrNull(p.y)?.getOrNull(p.x) ?: '.'
+    private fun putCharAt(p: Point, c: Char) {
+        map[p.y][p.x] = c
+    }
 
     private fun pipeEnds(p: Point): Set<Point> {
         val shape = charAt(p)
@@ -35,7 +37,7 @@ class Day10(filename: String) {
         val startY = map.indexOfFirst { it.contains('S') }
         val startX = map[startY].indexOf('S')
         val start = Point(startX, startY)
-        val pipe = mutableListOf<Point>()
+        val pipe = mutableListOf(start)
         var current = pipeEnds(start).first()
         var prev = start
         do {
@@ -44,18 +46,82 @@ class Day10(filename: String) {
             prev = current
             current = next
         } while (current != start)
+        this.pipe = pipe.toList()
 
-        println((pipe.size + 1) / 2)
+        println(pipe.size / 2)
     }
+
+    private fun isOnPipe(x: Int, y: Int) = pipe.contains(Point(x, y))
 
     fun part2() {
+        var counter = 0
+        replaceStartWithPipeChar()
+        map.forEachIndexed { y, line ->
+            var inside = false
+            var pipeStartChar = ' '
+            line.forEachIndexed { x, c ->
+                if (isOnPipe(x, y)) {
+                    when {
+                        c == '|' -> {
+                            inside = !inside
+                        }
+                        c == 'F' || c == 'L' -> {
+                            pipeStartChar = c
+                        }
+                        c == 'J' && pipeStartChar == 'F' -> {
+                            inside = !inside
+                        }
+                        c == '7' && pipeStartChar == 'L' -> {
+                            inside = !inside
+                        }
+                    }
+                } else if (inside) {
+                    counter++
+                    line[x] = 'I'
+                }
+            }
+        }
+        println(counter)
+    }
+//  2
+// 1.4
+//  8
+    private fun replaceStartWithPipeChar() {
+        val start = pipe.first()
+        val beforeStart = pipe.last()
+        val afterStart = pipe[1]
+
+        val dA = start.whatDirIs(afterStart)
+        val dB = start.whatDirIs(beforeStart)
+        val twoDirs = dA + dB
+        val replacement = when (twoDirs) {
+            3 -> 'J'
+            5 -> '-'
+            6 -> 'L'
+            9 -> '7'
+            10 -> '|'
+            12 -> 'F'
+            else -> '.'
+        }
+
+        putCharAt(start, replacement)
     }
 
+    private fun Point.whatDirIs(p: Point): Int {
+        val dx = p.x - this.x
+        val dy = p.y - this.y
+        return when {
+            dx == -1 -> 1
+            dy == -1 -> 2
+            dx == 1 -> 4
+            else -> 8
+        }
+    }
 }
 
 fun main() {
     measureTimeMillis {
-        val day = Day10("resources/aoc2023/day10sample2.txt")
+        val day = Day10("resources/aoc2023/day10.txt")
 
         print("Part 1 solution is ")
         day.part1()

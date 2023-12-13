@@ -58,22 +58,10 @@ class Day10(filename: String) {
         replaceStartWithPipeChar()
         map.forEachIndexed { y, line ->
             var inside = false
-            var pipeStartChar = ' '
             line.forEachIndexed { x, c ->
                 if (isOnPipe(x, y)) {
-                    when {
-                        c == '|' -> {
-                            inside = !inside
-                        }
-                        c == 'F' || c == 'L' -> {
-                            pipeStartChar = c
-                        }
-                        c == 'J' && pipeStartChar == 'F' -> {
-                            inside = !inside
-                        }
-                        c == '7' && pipeStartChar == 'L' -> {
-                            inside = !inside
-                        }
+                    if (c in setOf('|', 'F', '7')) {
+                        inside = !inside
                     }
                 } else if (inside) {
                     counter++
@@ -83,38 +71,14 @@ class Day10(filename: String) {
         }
         println(counter)
     }
-//  2
-// 1.4
-//  8
+
     private fun replaceStartWithPipeChar() {
         val start = pipe.first()
-        val beforeStart = pipe.last()
-        val afterStart = pipe[1]
+        val aroundStart = setOf(pipe.last(), pipe[1])
 
-        val dA = start.whatDirIs(afterStart)
-        val dB = start.whatDirIs(beforeStart)
-        val twoDirs = dA + dB
-        val replacement = when (twoDirs) {
-            3 -> 'J'
-            5 -> '-'
-            6 -> 'L'
-            9 -> '7'
-            10 -> '|'
-            12 -> 'F'
-            else -> '.'
-        }
-
-        putCharAt(start, replacement)
-    }
-
-    private fun Point.whatDirIs(p: Point): Int {
-        val dx = p.x - this.x
-        val dy = p.y - this.y
-        return when {
-            dx == -1 -> 1
-            dy == -1 -> 2
-            dx == 1 -> 4
-            else -> 8
+        listOf('-', '|', 'F', '7', 'L', 'J').find { c ->
+            putCharAt(start, c)
+            pipeEnds(start) == aroundStart
         }
     }
 }

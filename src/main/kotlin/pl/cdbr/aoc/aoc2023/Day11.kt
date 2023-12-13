@@ -1,6 +1,7 @@
 package pl.cdbr.aoc.aoc2023
 
 import pl.cdbr.aoc.aoc2023.Day3.Point
+import pl.cdbr.aoc.common.*
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
@@ -58,10 +59,6 @@ class Day11(filename: String) {
 
 private fun Set<Point>.crossProduct(): Set<Pair<Point, Point>> {
     return this.flatMapIndexed { i, first -> this.drop(i + 1).map { second -> first to second } }.toSet()
-}
-
-private fun List<String>.flip(): List<String> {
-    return this.first().mapIndexed { i, _ -> this.map { it[i] }.joinToString("") }
 }
 
 fun main() {

@@ -1,23 +1,10 @@
 package pl.cdbr.aoc.aoc2023
 
+import pl.cdbr.aoc.common.Point
 import java.io.File
-import java.lang.Exception
 
 class Day3(filename: String) {
     private val input = parse(File(filename))
-
-    data class Point(val x: Int, val y: Int) {
-        fun surroundings(): List<Point> = listOf(
-            Point(x - 1, y - 1),
-            Point(x - 1, y),
-            Point(x - 1, y + 1),
-            Point(x, y - 1),
-            Point(x, y + 1),
-            Point(x + 1, y - 1),
-            Point(x + 1, y),
-            Point(x + 1, y + 1)
-        )
-    }
 
     data class Schematics(val symbols: Map<Point, Char>, val numbers: Map<Point, Int>) {
         private fun Point.parts(): List<Int> {

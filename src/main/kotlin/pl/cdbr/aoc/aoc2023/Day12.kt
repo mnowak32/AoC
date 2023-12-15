@@ -19,7 +19,7 @@ class Day12(filename: String) {
         }
     }
 
-    private fun String.matchesWith(other: String) = this.toCharArray().zip(other.toCharArray()).all { (c1, c2) -> (c2 == '?' || c1 == c2) }
+    private fun String.matchesWith(other: String) = this.zip(other).all { (c1, c2) -> (c2 == '?' || c1 == c2) }
 
     private fun mapFor(dots: Int, hashes: Int) = ".".repeat(dots) + "#".repeat(hashes) + "."
 
@@ -33,24 +33,18 @@ class Day12(filename: String) {
                 } else {
                     0L
                 }
-            } else if (pattern.isEmpty()) {
-                0L
             } else {
                 val remainingHashes = counts.sum()
                 val availDotSpace = pattern.length - remainingHashes
-                if (availDotSpace < 0) {
-                    0
-                } else {
-                    val nextHashes = counts.first()
-                    (0..availDotSpace).sumOf { dots ->
-                        val mapFragment = mapFor(dots, nextHashes)
-                        if (mapFragment.matchesWith("$pattern.")) {
-                            val newPattern = pattern.drop(mapFragment.length)
-                            val newCounts = counts.drop(1)
-                            countPossibleMatches(newPattern, newCounts)
-                        } else {
-                            0
-                        }
+                val nextHashes = counts.first()
+                (0..availDotSpace).sumOf { dots ->
+                    val mapFragment = mapFor(dots, nextHashes)
+                    if (mapFragment.matchesWith("$pattern.")) {
+                        val newPattern = pattern.drop(mapFragment.length)
+                        val newCounts = counts.drop(1)
+                        countPossibleMatches(newPattern, newCounts)
+                    } else {
+                        0
                     }
                 }
             }

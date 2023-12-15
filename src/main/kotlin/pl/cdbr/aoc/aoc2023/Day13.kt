@@ -11,22 +11,25 @@ class Day13(filename: String) {
     private val map = parse(File(filename))
     
     private fun parse(input: File): List<List<String>> {
-        return input.useLines { lines ->
-            val result = mutableListOf<List<String>>()
-            val current = mutableListOf<String>()
-            lines.forEach { line ->
-                if (line.isBlank() && current.isNotEmpty()) {
-                    result.add(current.toList())
-                    current.clear()
-                } else {
-                    current.add(line)
-                }
-            }
-            if (current.isNotEmpty()) {
-                result.add(current.toList())
-            }
-            result.toList()
+        val lines = input.readLines()
+        return lines.splitIntoParts()
+    }
+
+    private tailrec fun List<String>.splitIntoParts(begin: List<List<String>> = emptyList()): List<List<String>> {
+        val (head, tail) = this.partWhile(String::isNotBlank)
+        val toReturn = begin + listOf(head)
+
+        return if (tail.isEmpty()) {
+            toReturn
+        } else {
+            tail.splitIntoParts(toReturn)
         }
+    }
+
+    private fun List<String>.partWhile(predicate: (String) -> Boolean): Pair<List<String>, List<String>> {
+        val head = this.takeWhile(predicate)
+        val tail = this.drop(head.size + 1)
+        return head to tail
     }
 
     private fun List<String>.findMirrorBetweenLines(matchFunction: (List<String>, List<String>) -> Boolean): Int {
@@ -42,7 +45,7 @@ class Day13(filename: String) {
         return one.take(sizeToCompare) == other.take(sizeToCompare)
     }
 
-    private fun matchesWIthSmudge(one: List<String>, other: List<String>): Boolean {
+    private fun matchesWithSmudge(one: List<String>, other: List<String>): Boolean {
         val sizeToCompare = min(one.size, other.size)
         val diffs = one.take(sizeToCompare).zip(other.take(sizeToCompare)).sumOf { (s1, s2) -> s1.countDifferences(s2) }
         return (diffs == 1)
@@ -63,7 +66,7 @@ class Day13(filename: String) {
     }
 
     fun part2() {
-        println(sumOfMirrors(::matchesWIthSmudge))
+        println(sumOfMirrors(::matchesWithSmudge))
     }
 
 }

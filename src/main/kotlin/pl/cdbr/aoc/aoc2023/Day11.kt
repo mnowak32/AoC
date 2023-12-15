@@ -1,7 +1,7 @@
 package pl.cdbr.aoc.aoc2023
 
-import pl.cdbr.aoc.aoc2023.Day3.Point
-import pl.cdbr.aoc.common.*
+import pl.cdbr.aoc.common.Point
+import pl.cdbr.aoc.common.flip
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
@@ -30,9 +30,8 @@ class Day11(filename: String) {
     }
 
     private fun expand(initialMap: List<String>): List<Int> {
-        return initialMap.mapIndexedNotNull { i, line ->
-            if (!line.contains('#')) i
-            else null
+        return initialMap.indices.filter {
+            !initialMap[it].contains('#')
         }
     }
 
@@ -54,7 +53,6 @@ class Day11(filename: String) {
         val expansionY = expandedY.count { it in y1 until y2 } * expansionRate
         return baseDist.toLong() + expansionX + expansionY
     }
-
 }
 
 private fun Set<Point>.crossProduct(): Set<Pair<Point, Point>> {

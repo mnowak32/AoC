@@ -1,6 +1,6 @@
 package pl.cdbr.aoc.aoc2023
 
-import pl.cdbr.aoc.aoc2023.Day3.Point
+import pl.cdbr.aoc.common.Point
 import java.io.File
 import kotlin.system.measureTimeMillis
 import kotlin.time.DurationUnit

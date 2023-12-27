@@ -1,6 +1,7 @@
 package pl.cdbr.aoc.aoc2023
 
 import pl.cdbr.aoc.common.Point
+import pl.cdbr.aoc.common.crossProduct
 import pl.cdbr.aoc.common.flip
 import java.io.File
 import kotlin.math.max
@@ -53,10 +54,6 @@ class Day11(filename: String) {
         val expansionY = expandedY.count { it in y1 until y2 } * expansionRate
         return baseDist.toLong() + expansionX + expansionY
     }
-}
-
-private fun Set<Point>.crossProduct(): Set<Pair<Point, Point>> {
-    return this.flatMapIndexed { i, first -> this.drop(i + 1).map { second -> first to second } }.toSet()
 }
 
 fun main() {
